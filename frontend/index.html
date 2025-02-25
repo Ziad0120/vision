@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <title>vision education centre</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- حقل كلمة المرور لتسجيل الدخول -->
+  <div class="password-container">
+    <input type="password" id="admin-password" placeholder="Password">
+    <!-- <button class="toggle-password" onclick="togglePassword('admin-password', this)">👁️</button>   -->
+    <button class="button-login" id="login-btn">تسجيل الدخول</button>
+  </div>
+
+  <!-- حقول الإدخال التي تظهر بعد تسجيل الدخول -->
+  <div id="data-form" style="display: none;">
+    <div class="input">
+      <input class="clas" type="text" id="name" required>
+      <label for="">Name</label>
+    </div>
+
+    <div class="input password-container">
+      <input class="clas" type="number" id="password" required>
+      <!-- <button class="toggle-password" onclick="togglePassword('password', this)">👁️</button> -->
+      <label for="">Points</label>
+    </div>
+
+    <button class="button-add" id="add-row-btn">إضافة إلى الجدول</button>
+  </div>
+
+  <!-- البحث -->
+  <div class="search">
+    <select id="search-category">
+      <option value="name">البحث حسب الاسم</option>
+      <option value="points">البحث حسب النقاط</option>
+    </select>
+    <input id="search-input" type="text" placeholder="...البحث">
+  </div>
+
+
+  <!-- الجدول -->
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Points</th>
+        <th>View</th>
+        <th>Delete</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody id="data-table">
+      <!-- الصفوف تُضاف ديناميكيًا هنا -->
+    </tbody>
+  </table>
+
+  <script>
+const nameInput = document.getElementById("name");
+   const passwordInput = document.getElementById("password");
+   const addRowBtn = document.getElementById("add-row-btn");
+   const dataTable = document.getElementById("data-table");
+   const loginBtn = document.getElementById("login-btn");
+   const adminPasswordInput = document.getElementById("admin-password");
+   const dataForm = document.getElementById("data-form");
+
+   const ADMIN_PASSWORD = "1234"; // كلمة المرور
+
+   // التحقق من كلمة المرور
+loginBtn.addEventListener("click", () => {
+  const enteredPassword = adminPasswordInput.value.trim();
+  
+  if (enteredPassword === ADMIN_PASSWORD) {
+    dataForm.style.display = "block";
+    loginBtn.style.display = "none";
+    adminPasswordInput.style.display = "none";
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'خطأ',
+      text: 'كلمة المرور غير صحيحة!',
+      confirmButtonText: 'حسناً'
+    });
+  }
+});
+
+   // إضافة صف إلى الجدول
+   // إضافة صف إلى الجدول
+async function addRow(name, points) {
+    const row = document.createElement("tr");
+    const index = dataTable.rows.length + 1;
+
+    row.innerHTML = `
+        <td>${index}</td>
+        <td>${name}</td>
+        <td>${points}</td>
+        <td><a href="details.html?name=${encodeURIComponent(name)}" class="view-btn">View</a></td>
+        <td><button class="delete-btn" data-name="${name}">Delete</button></td>
+        <td><button class="edit-btn" id="edit-btn-${name}" data-name="${name}">Edit</button></td>
+    `;
+
+    row.querySelector(".delete-btn").addEventListener("click", () => promptForPasswordAndDelete(name));
+    row.querySelector(`#edit-btn-${name}`).addEventListener("click", () => promptForPasswordAndEdit(name));
+
+    dataTable.appendChild(row);
+}
+
+// التحقق من كلمة المرور قبل حذف الصف
+async function promptForPasswordAndDelete(name) {
+    const confirmation = confirm("هل أنت متأكد أنك تريد حذف هذا الصف؟");
+    if (!confirmation) return;
+
+    const enteredPassword = prompt("أدخل كلمة المرور للحذف:");
+    if (enteredPassword === ADMIN_PASSWORD) {
+        await fetch(`/api/users/${encodeURIComponent(name)}`, { method: 'DELETE' });
+        loadTable();
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'كلمة المرور غير صحيحة!',
+            confirmButtonText: 'حسناً'
+        });
+    }
+}
+
+// تعديل صف في الجدول
+async function promptForPasswordAndEdit(name) {
+    const confirmation = confirm("هل تريد تعديل هذا الصف؟");
+    if (!confirmation) return;
+
+    const enteredPassword = prompt("أدخل كلمة المرور للتعديل:");
+    if (enteredPassword === ADMIN_PASSWORD) {
+        const newName = prompt("أدخل الاسم الجديد:");
+        const newPoints = parseInt(prompt("أدخل النقاط الجديدة:"), 10);
+
+        await fetch(`/api/users/${encodeURIComponent(name)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName, password: newPoints }),
+        });
+        loadTable();
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'كلمة المرور غير صحيحة!',
+            confirmButtonText: 'حسناً'
+        });
+    }
+}
+
+// تحميل البيانات إلى الجدول
+async function loadTable() {
+    const response = await fetch('/api/users');
+    const users = await response.json();
+    dataTable.innerHTML = ""; // مسح الجدول
+    users.forEach(user => addRow(user.name, user.password));
+}
+   // معالجة الضغط على زر الإضافة
+addRowBtn.addEventListener("click", async () => {
+  const name = nameInput.value.trim();
+  const password = parseInt(passwordInput.value.trim(), 10);
+
+  if (!name || isNaN(password)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'خطأ',
+      text: 'يرجى ملء جميع الحقول بشكل صحيح!',
+      confirmButtonText: 'حسناً'
+    });
+    return;
+  }
+
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, password }),
+  });
+  const newUser = await response.json();
+  loadTable();
+  nameInput.value = "";
+  passwordInput.value = "";
+});
+
+   // البحث
+   document.getElementById("search-input").addEventListener("input", () => {
+       const searchCategory = document.getElementById("search-category").value;
+       const searchValue = document.getElementById("search-input").value.toLowerCase();
+
+       Array.from(dataTable.rows).forEach(row => {
+           const cellValue = row.cells[searchCategory === "name" ? 1 : 2]?.textContent.toLowerCase();
+           row.style.display = cellValue && cellValue.includes(searchValue) ? "" : "none";
+       });
+   });
+
+   window.addEventListener("DOMContentLoaded", loadTable);
+  </script>
+</body>
+</html>

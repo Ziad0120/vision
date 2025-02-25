@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المستخدم</title>
+  <link rel="stylesheet" href="details.css">
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Exam</th>
+        <th>Points </th>
+        <th>Total</th>
+        <th>Controls</th>
+      </tr>
+    </thead>
+    <tbody id="details-table">
+      <!-- سيتم عرض التفاصيل هنا -->
+    </tbody>
+  </table>
+  <div class="div-button-add">
+      <button class="button-add" onclick="addDetail()">إضافة تفاصيل</button>
+
+  </div>
+
+  <script>
+const ADMIN_PASSWORD = "1234";
+
+   // استخراج معرف المستخدم من الرابط
+   // استخراج اسم المستخدم من الرابط
+const urlParams = new URLSearchParams(window.location.search);
+const userName = urlParams.get("name");
+
+const detailsTable = document.getElementById("details-table");
+
+// جلب بيانات المستخدم من Backend
+async function fetchUserDetails(userName) {
+    const response = await fetch(`/api/users/${encodeURIComponent(userName)}`);
+    const user = await response.json();
+    return user;
+}
+
+// جلب التفاصيل وعرضها في الجدول
+async function loadDetails() {
+    const user = await fetchUserDetails(userName);
+    detailsTable.innerHTML = ""; // تفريغ الجدول قبل الإضافة
+
+    user.details.forEach((detail, index) => {
+        const row = `
+            <tr>
+                <td onclick="editUserName()" style="cursor: pointer;">${user.name}</td>
+                <td>${detail.exam}</td>
+                <td>${detail.points}</td>
+                <td>${detail.total}</td>
+                <td>
+                    <button class="edit-btn" onclick="editDetail('${encodeURIComponent(userName)}', '${detail._id}')">EDIT</button>
+                    <button class="delete-btn" onclick="deleteDetail('${encodeURIComponent(userName)}', '${detail._id}')">Delete</button>
+                </td>
+            </tr>
+        `;
+        detailsTable.innerHTML += row;
+    });
+}
+
+// إضافة تفاصيل جديدة
+async function addDetail() {
+    const { value: enteredPassword } = await Swal.fire({
+        title: 'أدخل كلمة المرور',
+        input: 'password',
+        inputPlaceholder: 'كلمة المرور',
+        showCancelButton: true,
+        confirmButtonText: 'تأكيد',
+        cancelButtonText: 'إلغاء',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'يجب إدخال كلمة المرور!';
+            }
+        }
+    });
+
+    if (enteredPassword === ADMIN_PASSWORD) {
+        const { value: exam } = await Swal.fire({
+            title: 'أدخل اسم الاختبار',
+            input: 'text',
+            inputPlaceholder: 'اسم الاختبار',
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال اسم الاختبار!';
+                }
+            }
+        });
+
+        const { value: points } = await Swal.fire({
+            title: 'أدخل النقاط',
+            input: 'number',
+            inputPlaceholder: 'النقاط',
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال النقاط!';
+                }
+            }
+        });
+
+        const { value: total } = await Swal.fire({
+            title: 'أدخل الإجمالي',
+            input: 'number',
+            inputPlaceholder: 'الإجمالي',
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال الإجمالي!';
+                }
+            }
+        });
+
+        const newDetail = {
+            exam: exam,
+            points: points,
+            total: total,
+        };
+
+        await fetch(`/api/users/${encodeURIComponent(userName)}/details`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newDetail),
+        });
+
+        // تحديث الجدول بعد إضافة التفاصيل الجديدة
+        loadDetails();
+        Swal.fire('تمت الإضافة!', 'تمت إضافة التفاصيل بنجاح.', 'success');
+    } else {
+        Swal.fire('خطأ!', 'كلمة المرور غير صحيحة.', 'error');
+    }
+}
+
+// تعديل تفاصيل موجودة
+async function editDetail(userName, detailId) {
+    const { value: enteredPassword } = await Swal.fire({
+        title: 'أدخل كلمة المرور',
+        input: 'password',
+        inputPlaceholder: 'كلمة المرور',
+        showCancelButton: true,
+        confirmButtonText: 'تأكيد',
+        cancelButtonText: 'إلغاء',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'يجب إدخال كلمة المرور!';
+            }
+        }
+    });
+
+    if (enteredPassword === ADMIN_PASSWORD) {
+        const user = await fetchUserDetails(userName);
+        const detail = user.details.find(d => d._id === detailId);
+
+        const { value: newExam } = await Swal.fire({
+            title: 'أدخل اسم الاختبار الجديد',
+            input: 'text',
+            inputValue: detail.exam,
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال اسم الاختبار!';
+                }
+            }
+        });
+
+        const { value: newPoints } = await Swal.fire({
+            title: 'أدخل النقاط الجديدة',
+            input: 'number',
+            inputValue: detail.points,
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال النقاط!';
+                }
+            }
+        });
+
+        const { value: newTotal } = await Swal.fire({
+            title: 'أدخل الإجمالي الجديد',
+            input: 'number',
+            inputValue: detail.total,
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال الإجمالي!';
+                }
+            }
+        });
+
+        await fetch(`/api/users/${encodeURIComponent(userName)}/details/${detailId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ exam: newExam, points: newPoints, total: newTotal }),
+        });
+
+        loadDetails();
+        Swal.fire('تم التعديل!', 'تم تعديل التفاصيل بنجاح.', 'success');
+    } else {
+        Swal.fire('خطأ!', 'كلمة المرور غير صحيحة.', 'error');
+    }
+}
+
+// حذف تفاصيل
+async function deleteDetail(userName, detailId) {
+    const { value: enteredPassword } = await Swal.fire({
+        title: 'أدخل كلمة المرور',
+        input: 'password',
+        inputPlaceholder: 'كلمة المرور',
+        showCancelButton: true,
+        confirmButtonText: 'تأكيد',
+        cancelButtonText: 'إلغاء',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'يجب إدخال كلمة المرور!';
+            }
+        }
+    });
+
+    if (enteredPassword === ADMIN_PASSWORD) {
+        const result = await Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: "لن تتمكن من التراجع عن هذا الإجراء!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، قم بالحذف!',
+            cancelButtonText: 'إلغاء'
+        });
+
+        if (result.isConfirmed) {
+            await fetch(`/api/users/${encodeURIComponent(userName)}/details/${detailId}`, {
+                method: 'DELETE',
+            });
+
+            loadDetails();
+            Swal.fire('تم الحذف!', 'تم حذف التفاصيل بنجاح.', 'success');
+        }
+    } else {
+        Swal.fire('خطأ!', 'كلمة المرور غير صحيحة.', 'error');
+    }
+}
+
+// تعديل اسم المستخدم
+async function editUserName() {
+    const { value: enteredPassword } = await Swal.fire({
+        title: 'أدخل كلمة المرور',
+        input: 'password',
+        inputPlaceholder: 'كلمة المرور',
+        showCancelButton: true,
+        confirmButtonText: 'تأكيد',
+        cancelButtonText: 'إلغاء',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'يجب إدخال كلمة المرور!';
+            }
+        }
+    });
+
+    if (enteredPassword === ADMIN_PASSWORD) {
+        const user = await fetchUserDetails(userName);
+        const { value: newUserName } = await Swal.fire({
+            title: 'أدخل اسم المستخدم الجديد',
+            input: 'text',
+            inputValue: user.name,
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد',
+            cancelButtonText: 'إلغاء',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'يجب إدخال اسم المستخدم!';
+                }
+            }
+        });
+
+        if (newUserName) {
+            await fetch(`/api/users/${encodeURIComponent(userName)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newUserName }),
+            });
+
+            loadDetails();
+            Swal.fire('تم التعديل!', 'تم تعديل اسم المستخدم بنجاح.', 'success');
+        }
+    } else {
+        Swal.fire('خطأ!', 'كلمة المرور غير صحيحة.', 'error');
+    }
+}
+
+// تحميل التفاصيل عند فتح الصفحة
+loadDetails();
+  </script>
+</body>
+</html>

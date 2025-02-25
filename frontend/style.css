@@ -1,0 +1,483 @@
+body {
+  width: 100%;
+  background-color: #2b2b2b;   
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.password-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#admin-password {
+  width: 300px;
+  border-radius: 15px ;
+  padding: 20px ;
+  outline: none ;
+  margin-left: 77px;
+  -webkit-border-radius: 15px ;
+  -moz-border-radius: 15px ;
+  -ms-border-radius: 15px ;
+  -o-border-radius: 15px ;
+}
+#admin-password:hover {
+transform: scale(1.02); 
+transition: all 0.3s ease; 
+}
+.button-login{
+  width: 100px;
+  border-radius: 15px;
+}
+.button-login:hover {
+  background: darkblue;
+}
+.toggle-password {
+  position: absolute;
+  left: 350px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.input {
+  margin: 20px 0;
+  position: relative;
+  border: 1px solid deepskyblue ;
+  border-radius:15px ;
+  width: 390px;
+  height: 60px;
+}
+.input label {
+  position: absolute;
+  transform: translatey(-50%);
+  top: 50%;
+  left: 15px;
+  font-size: 16px;
+  pointer-events: none;
+  color: plum;
+  padding: 0 5px;
+  transition: 1s;
+}
+.input input {
+  width: 360px;
+  height: 60px;
+  color:plum;
+  padding: 0 15px;
+  font-size: 16px;
+  border: 1.2px solid rgb(220, 223, 223);
+  background:transparent;
+  border-radius: 15px;
+}
+.input input:focus~label,
+.input input:valid~label {
+  top: 0;
+  left: 155px;
+  background:  #2b2b2b ;
+  font-size: 15px;
+  color: red ;
+}
+.button-add {
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
+  border-radius: 15px;
+  margin-left: 95px;
+}
+.button-add:hover {
+  background: darkblue;
+}
+
+
+.search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+#search-input {
+  width: 440px; 
+  padding: 12px 20px; 
+  font-size: 16px; 
+  border: 2px solid #00ff00; 
+  border-radius: 25px; 
+  background-color: #1f1f1f;   
+  color: #fff; 
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  outline: none; 
+  transition: all 0.3s ease-in-out; 
+}
+#search-input:focus {
+  border-color: #00eeff; 
+  box-shadow: 0 0 15px rgba(0, 238, 255, 0.7); 
+  background-color: #2b2b2b; 
+}
+select {
+    height: 22px;
+    width: 20px;
+    background-color: white;
+    margin-right: 3px;
+}
+
+table {
+  width: 99%;
+  border-collapse: collapse;
+}
+table thead {
+position: sticky;
+top: 0;
+background-color: #111;
+z-index: 1;
+}
+table, th, td {
+  border: 1px solid #ccc;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background-color: #ddd;
+}
+table tbody tr:hover {
+background-color: #333; 
+transform: scale(1.02); 
+transition: all 0.3s ease; 
+}
+button, a {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+}
+table td {
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 5px rgba(0, 255, 255, 0.8), 
+              0px 0px 10px rgba(0, 128, 128, 0.6);  
+  color: white;
+  background: linear-gradient(90deg, #00ff00, #00ffff, #0000ff); 
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 15px;
+  background-color: rgba(50, 50, 50, 0.8); 
+  border: 1px solid #444; 
+}
+
+a.view-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+a.view-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+button.delete-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+button.delete-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+button.edit-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+button.edit-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+
+
+/* الأنماط الافتراضية لجميع الشاشات */
+body {
+  font-size: 16px;
+}
+
+/* للهواتف المحمولة */
+@media screen and (max-width: 599px) {
+  body {
+      font-size: 14px;
+} 
+body {
+  width: 100%;
+  background-color: #2b2b2b;   
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.password-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#admin-password {
+  width: 300px;
+  border-radius: 15px ;
+  padding: 20px ;
+  outline: none ;
+  margin-left: 250px ;
+  -webkit-border-radius: 15px ;
+  -moz-border-radius: 15px ;
+  -ms-border-radius: 15px ;
+  -o-border-radius: 15px ;
+}
+#admin-password:hover {
+transform: scale(1.02); 
+transition: all 0.3s ease; 
+}
+.button-login{
+  width: 100px;
+  border-radius: 15px;
+}
+.button-login:hover {
+  background: darkblue;
+}
+.toggle-password {
+  position: absolute;
+  left: 350px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.input {
+  margin: 20px 0;
+  position: relative;
+  border: 1px solid deepskyblue ;
+  border-radius:15px ;
+  width: 390px;
+  height: 60px;
+}
+.input label {
+  position: absolute;
+  transform: translatey(-50%);
+  top: 50%;
+  left: 15px;
+  font-size: 16px;
+  pointer-events: none;
+  color: plum;
+  padding: 0 5px;
+  transition: 1s;
+}
+.input input {
+  width: 360px;
+  height: 60px;
+  color:plum;
+  padding: 0 15px;
+  font-size: 16px;
+  border: 1.2px solid rgb(220, 223, 223);
+  background:transparent;
+  border-radius: 15px;
+}
+.input input:focus~label,
+.input input:valid~label {
+  top: 0;
+  left: 155px;
+  background:  #2b2b2b ;
+  font-size: 15px;
+  color: red ;
+}
+.button-add {
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
+  border-radius: 15px;
+  margin-left: 95px;
+}
+.button-add:hover {
+  background: darkblue;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+  margin-left: 190px;
+}
+#search-input {
+  width: 440px;
+  padding: 12px 20px; 
+  font-size: 16px; 
+  border: 2px solid #00ff00; 
+  border-radius: 25px; 
+  background-color: #1f1f1f;   
+  color: #fff; 
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  outline: none; 
+  transition: all 0.3s ease-in-out; 
+}
+#search-input:focus {
+  border-color: #00eeff; 
+  box-shadow: 0 0 15px rgba(0, 238, 255, 0.7); 
+  background-color: #2b2b2b; 
+}
+select {
+    height: 22px;
+    width: 20px;
+    background-color: white;
+    margin-right: 3px;
+}
+/* للهواتف المحمولة */
+
+table {
+  width: 94%;
+  border-collapse: collapse;
+  margin-left:3px ;
+}
+table thead {
+position: sticky;
+top: 0;
+background-color: #111;
+z-index: 1;
+}
+table, th, td {
+  border: 1px solid #ccc;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background-color: #ddd;
+}
+table tbody tr:hover {
+background-color: #333; 
+transform: scale(1.02); 
+transition: all 0.3s ease; 
+}
+button, a {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+}
+table td {
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 5px rgba(0, 255, 255, 0.8), 
+              0px 0px 10px rgba(0, 128, 128, 0.6);  
+  color: white;
+  background: linear-gradient(90deg, #00ff00, #00ffff, #0000ff); 
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 15px;
+  background-color: rgba(50, 50, 50, 0.8); 
+  border: 1px solid #444; 
+}
+
+a.view-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+a.view-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+button.delete-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+button.delete-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+button.edit-btn {
+  display: inline-block;
+  background-color: #111;
+  font-size:10px;
+  letter-spacing:1.6px ;
+  color: rgba(255,255 ,255 , .4);
+  padding: 10px 30px;
+  text-decoration: none;
+  text-transform:uppercase ;
+  border-radius:10px;
+  transition: .8s ease;
+} 
+button.edit-btn {
+  color:#00eeff ;
+  text-shadow: 0 0 0 #00eeff;
+  box-shadow:
+    0 0 10px #00eeff,
+    0 0 20px #00eeff,
+    0 0 40px #00eeff;
+}
+}
